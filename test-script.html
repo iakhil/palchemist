@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Three.js Direct Script Test</title>
+    <style>
+        body { margin: 0; background-color: #333; color: white; font-family: Arial; padding: 20px; }
+        pre { background: #222; padding: 10px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h1>Three.js Script Test</h1>
+    <button id="checkBtn">Check for bare imports</button>
+    <div id="results"></div>
+    
+    <script>
+        document.getElementById('checkBtn').addEventListener('click', function() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p>Checking script tags for bare imports...</p>';
+            
+            // Get all script tags
+            const scripts = document.querySelectorAll('script[type="module"]');
+            
+            let foundIssue = false;
+            
+            // Simple check for 'import' and 'three"'
+            for (const script of scripts) {
+                const content = script.textContent;
+                if (content.includes('import') && content.includes('three"')) {
+                    foundIssue = true;
+                    resultsDiv.innerHTML += `<p>Found potential issue in script tag:</p><pre>${content}</pre>`;
+                }
+            }
+            
+            if (!foundIssue) {
+                resultsDiv.innerHTML += '<p>No bare imports found in script tags.</p>';
+            }
+            
+            // Manually check common files
+            const filesToCheck = [
+                'main.js', 
+                'renderer.js', 
+                'elements.js', 
+                'combinations.js'
+            ];
+            
+            resultsDiv.innerHTML += '<p>Files you should check manually:</p><ul>';
+            
+            for (const file of filesToCheck) {
+                resultsDiv.innerHTML += `<li>js/${file} - Look for imports with just "three" without a path</li>`;
+            }
+            
+            resultsDiv.innerHTML += '</ul>';
+            
+            resultsDiv.innerHTML += `
+            <p>To fix the issue, make sure all Three.js imports use a full path:</p>
+            <pre>
+// WRONG:
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
+// CORRECT:
+import { THREE } from './module.js';
+import { THREE, OrbitControls } from './module.js';
+            </pre>
+            `;
+        });
+    </script>
+</body>
+</html> 

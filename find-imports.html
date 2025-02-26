@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Find Imports</title>
+</head>
+<body>
+    <h1>Check console for results</h1>
+    <script>
+        // List of files to check
+        const filesToCheck = [
+            'js/main.js',
+            'js/renderer.js',
+            'js/elements.js',
+            'js/combinations.js'
+        ];
+        
+        async function checkFiles() {
+            for (const file of filesToCheck) {
+                try {
+                    const response = await fetch(file);
+                    const text = await response.text();
+                    
+                    // Check for bare 'three' import
+                    if (text.includes('import') && text.includes('three"')) {
+                        console.error(`Found potential bare import in ${file}:`);
+                        // Find the line with the problem
+                        const lines = text.split('\n');
+                        for (let i = 0; i < lines.length; i++) {
+                            if (lines[i].includes('import') && lines[i].includes('three"')) {
+                                console.error(`Line ${i + 1}: ${lines[i]}`);
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error(`Error checking ${file}:`, error);
+                }
+            }
+        }
+        
+        checkFiles();
+    </script>
+</body>
+</html> 

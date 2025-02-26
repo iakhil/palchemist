@@ -1,0 +1,64 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+    background-color: #121212;
+    color: white;
+}
+
+#game-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+#scene-container {
+    flex: 1;
+}
+
+#ui-container {
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+#elements-panel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.element {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+    user-select: none;
+}
+
+.element:hover {
+    transform: scale(1.1);
+}
+
+#workspace {
+    height: 150px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+#result-display {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+} 
