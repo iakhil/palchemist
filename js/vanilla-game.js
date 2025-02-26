@@ -6,7 +6,7 @@ class PalchemistGame {
         this.selectedElements = [];
         this.discoveredElements = new Set([
             'hydrogen', 'proton', 'electron', 'neutron', 
-            'oxygen', 'carbon', 'nitrogen'  // Added more starting elements
+            'oxygen', 'carbon', 'nitrogen'  // Starting elements
         ]); 
         
         this.initUI();
@@ -38,19 +38,39 @@ class PalchemistGame {
         const elementsPanel = document.getElementById('elements-panel');
         elementsPanel.innerHTML = '';
         
-        this.discoveredElements.forEach(elementId => {
-            const element = ELEMENTS[elementId];
-            if (!element) return;
+        // Convert Set to Array and sort by element name
+        const sortedElements = Array.from(this.discoveredElements)
+            .map(id => ELEMENTS[id])
+            .filter(element => element) // Filter out any undefined elements
+            .sort((a, b) => a.name.localeCompare(b.name));
+        
+        sortedElements.forEach(element => {
+            const elementContainer = document.createElement('div');
+            elementContainer.style.display = 'inline-block';
+            elementContainer.style.margin = '5px';
+            elementContainer.className = 'appear';
             
             const elementDiv = document.createElement('div');
             elementDiv.className = 'element';
+            if (element.category === 'particle') {
+                elementDiv.classList.add('particle');
+            }
             elementDiv.style.backgroundColor = element.getColorString();
             elementDiv.textContent = element.symbol;
             elementDiv.dataset.id = element.id;
             
+            const elementInfo = document.createElement('div');
+            elementInfo.className = 'element-info';
+            elementInfo.textContent = element.name;
+            
             elementDiv.addEventListener('click', () => this.selectElement(element));
             
-            elementsPanel.appendChild(elementDiv);
+            // Add tooltip with category
+            elementDiv.title = `${element.name} (${element.category})`;
+            
+            elementContainer.appendChild(elementDiv);
+            elementContainer.appendChild(elementInfo);
+            elementsPanel.appendChild(elementContainer);
         });
     }
     
@@ -61,10 +81,14 @@ class PalchemistGame {
         const workspace = document.getElementById('workspace');
         
         const elementDiv = document.createElement('div');
-        elementDiv.className = 'element workspace-element';
+        elementDiv.className = 'element workspace-element appear';
+        if (element.category === 'particle') {
+            elementDiv.classList.add('particle');
+        }
         elementDiv.style.backgroundColor = element.getColorString();
         elementDiv.textContent = element.symbol;
         elementDiv.dataset.id = element.id;
+        elementDiv.title = `${element.name} (${element.category})`;
         
         // Insert before the buttons
         const buttons = workspace.querySelectorAll('button');
@@ -96,10 +120,19 @@ class PalchemistGame {
             resultDisplay.innerHTML = `
                 <h3>Success! You created ${resultElement.name}!</h3>
                 <p>${combination.description}</p>
-                <div class="element" style="background-color: ${resultElement.getColorString()}">
-                    ${resultElement.symbol}
-                </div>
             `;
+            
+            // Add visual element
+            const resultElementDiv = document.createElement('div');
+            resultElementDiv.className = 'element result-element appear';
+            if (resultElement.category === 'particle') {
+                resultElementDiv.classList.add('particle');
+            }
+            resultElementDiv.style.backgroundColor = resultElement.getColorString();
+            resultElementDiv.textContent = resultElement.symbol;
+            resultElementDiv.title = `${resultElement.name} (${resultElement.category})`;
+            
+            resultDisplay.appendChild(resultElementDiv);
             
             // Add the new element to discovered elements if it's not already there
             if (!this.discoveredElements.has(resultElement.id)) {
@@ -107,7 +140,16 @@ class PalchemistGame {
                 this.updateElementsPanel();
                 
                 resultDisplay.innerHTML += '<p><strong>New element discovered!</strong></p>';
+                
+                // Add back the result element since the innerHTML update removed it
+                resultDisplay.appendChild(resultElementDiv);
             }
+            
+            // Add combination list used
+            const inputList = document.createElement('div');
+            inputList.className = 'input-list';
+            inputList.innerHTML = `<p>Elements used: ${this.selectedElements.map(id => ELEMENTS[id].name).join(' + ')}</p>`;
+            resultDisplay.appendChild(inputList);
             
             // Clear the workspace after a successful combination
             this.clearWorkspace();
