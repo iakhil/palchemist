@@ -69,11 +69,7 @@
             border-radius: 12px;
             margin-bottom: 30px;
             display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 20px;
-            justify-content: center;
-            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.3);
+            flex-direction: column;
         }
         
         #result-display {
@@ -239,6 +235,25 @@
         
         .element.radioactive {
             animation: radiation 2s infinite;
+        }
+        
+        .workspace-elements-container {
+            min-height: 100px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: rgba(0,0,0,0.2);
+            border-radius: 8px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
         }
     </style>
 </head>

@@ -26,20 +26,33 @@ class PalchemistGame {
         const workspace = document.getElementById('workspace');
         const resultDisplay = document.getElementById('result-display');
         
-        // Populate elements panel with discovered elements
-        this.updateElementsPanel();
+        // Create a dedicated container for workspace elements
+        const workspaceElementsContainer = document.createElement('div');
+        workspaceElementsContainer.id = 'workspace-elements';
+        workspaceElementsContainer.className = 'workspace-elements-container';
+        workspace.appendChild(workspaceElementsContainer);
         
-        // Add combine button to workspace
+        // Create a container for buttons
+        const buttonContainer = document.createElement('div');
+        buttonContainer.className = 'button-container';
+        
+        // Add combine button to button container
         const combineButton = document.createElement('button');
         combineButton.textContent = 'Combine';
         combineButton.addEventListener('click', () => this.combineElements());
-        workspace.appendChild(combineButton);
+        buttonContainer.appendChild(combineButton);
         
-        // Add clear button
+        // Add clear button to button container
         const clearButton = document.createElement('button');
         clearButton.textContent = 'Clear';
         clearButton.addEventListener('click', () => this.clearWorkspace());
-        workspace.appendChild(clearButton);
+        buttonContainer.appendChild(clearButton);
+        
+        // Add button container to workspace
+        workspace.appendChild(buttonContainer);
+        
+        // Populate elements panel with discovered elements
+        this.updateElementsPanel();
     }
     
     updateElementsPanel() {
@@ -88,8 +101,8 @@ class PalchemistGame {
     selectElement(element) {
         console.log(`Selected element: ${element.name}`);
         
-        // Add the element to the workspace area
-        const workspace = document.getElementById('workspace');
+        // Add the element to the workspace elements container
+        const workspaceElementsContainer = document.getElementById('workspace-elements');
         
         const elementDiv = document.createElement('div');
         elementDiv.className = 'element workspace-element appear';
@@ -104,13 +117,8 @@ class PalchemistGame {
         elementDiv.dataset.id = element.id;
         elementDiv.title = `${element.name} (${element.category})`;
         
-        // Insert before the buttons
-        const buttons = workspace.querySelectorAll('button');
-        if (buttons.length > 0) {
-            workspace.insertBefore(elementDiv, buttons[0]);
-        } else {
-            workspace.appendChild(elementDiv);
-        }
+        // Add to the workspace elements container
+        workspaceElementsContainer.appendChild(elementDiv);
         
         // Add the element to the selected elements array
         this.selectedElements.push(element.id);
@@ -118,6 +126,25 @@ class PalchemistGame {
     
     combineElements() {
         console.log("Attempting to combine elements:", this.selectedElements);
+        
+        // Special case for single radioactive elements that can decay
+        if (this.selectedElements.length === 1) {
+            const elementId = this.selectedElements[0];
+            const element = ELEMENTS[elementId];
+            
+            if (element.category === 'radioactive') {
+                // Check if there's a decay combination for this single element
+                const combination = checkCombination([elementId]);
+                
+                if (combination) {
+                    this.processCombination(combination);
+                    return;
+                }
+            }
+            
+            document.getElementById('result-display').textContent = 'Select at least two elements to combine.';
+            return;
+        }
         
         if (this.selectedElements.length < 2) {
             document.getElementById('result-display').textContent = 'Select at least two elements to combine.';
@@ -127,59 +154,61 @@ class PalchemistGame {
         const combination = checkCombination(this.selectedElements);
         
         if (combination) {
-            const resultElement = ELEMENTS[combination.output];
-            
-            // Display the result
-            const resultDisplay = document.getElementById('result-display');
-            resultDisplay.innerHTML = `
-                <h3>Success! You created ${resultElement.name}!</h3>
-                <p>${combination.description}</p>
-            `;
-            
-            // Add visual element
-            const resultElementDiv = document.createElement('div');
-            resultElementDiv.className = 'element result-element appear';
-            if (resultElement.category === 'particle') {
-                resultElementDiv.classList.add('particle');
-            }
-            if (resultElement.category === 'radioactive' || resultElement.category === 'radiation') {
-                resultElementDiv.classList.add('radioactive');
-            }
-            resultElementDiv.style.backgroundColor = resultElement.getColorString();
-            resultElementDiv.textContent = resultElement.symbol;
-            resultElementDiv.title = `${resultElement.name} (${resultElement.category})`;
-            
-            resultDisplay.appendChild(resultElementDiv);
-            
-            // Add the new element to discovered elements if it's not already there
-            if (!this.discoveredElements.has(resultElement.id)) {
-                this.discoveredElements.add(resultElement.id);
-                this.updateElementsPanel();
-                
-                resultDisplay.innerHTML += '<p><strong>New element discovered!</strong></p>';
-                
-                // Add back the result element since the innerHTML update removed it
-                resultDisplay.appendChild(resultElementDiv);
-            }
-            
-            // Add combination list used
-            const inputList = document.createElement('div');
-            inputList.className = 'input-list';
-            inputList.innerHTML = `<p>Elements used: ${this.selectedElements.map(id => ELEMENTS[id].name).join(' + ')}</p>`;
-            resultDisplay.appendChild(inputList);
-            
-            // Clear the workspace after a successful combination
-            this.clearWorkspace();
-            
+            this.processCombination(combination);
         } else {
             document.getElementById('result-display').textContent = 'These elements cannot be combined. Try a different combination.';
         }
     }
     
+    processCombination(combination) {
+        const resultElement = ELEMENTS[combination.output];
+        
+        // Display the result
+        const resultDisplay = document.getElementById('result-display');
+        resultDisplay.innerHTML = `
+            <h3>Success! You created ${resultElement.name}!</h3>
+            <p>${combination.description}</p>
+        `;
+        
+        // Add visual element
+        const resultElementDiv = document.createElement('div');
+        resultElementDiv.className = 'element result-element appear';
+        if (resultElement.category === 'particle') {
+            resultElementDiv.classList.add('particle');
+        }
+        if (resultElement.category === 'radioactive' || resultElement.category === 'radiation') {
+            resultElementDiv.classList.add('radioactive');
+        }
+        resultElementDiv.style.backgroundColor = resultElement.getColorString();
+        resultElementDiv.textContent = resultElement.symbol;
+        resultElementDiv.title = `${resultElement.name} (${resultElement.category})`;
+        
+        resultDisplay.appendChild(resultElementDiv);
+        
+        // Add the new element to discovered elements if it's not already there
+        if (!this.discoveredElements.has(resultElement.id)) {
+            this.discoveredElements.add(resultElement.id);
+            this.updateElementsPanel();
+            
+            resultDisplay.innerHTML += '<p><strong>New element discovered!</strong></p>';
+            
+            // Add back the result element since the innerHTML update removed it
+            resultDisplay.appendChild(resultElementDiv);
+        }
+        
+        // Add combination list used
+        const inputList = document.createElement('div');
+        inputList.className = 'input-list';
+        inputList.innerHTML = `<p>Elements used: ${this.selectedElements.map(id => ELEMENTS[id].name).join(' + ')}</p>`;
+        resultDisplay.appendChild(inputList);
+        
+        // Clear the workspace after a successful combination
+        this.clearWorkspace();
+    }
+    
     clearWorkspace() {
-        const workspace = document.getElementById('workspace');
-        const elementDivs = workspace.querySelectorAll('.workspace-element');
-        elementDivs.forEach(div => div.remove());
+        const workspaceElementsContainer = document.getElementById('workspace-elements');
+        workspaceElementsContainer.innerHTML = ''; // Clear all elements
         
         this.selectedElements = [];
     }
