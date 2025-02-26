@@ -126,6 +126,15 @@
             margin-right: 10px;
         }
         
+        .button-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
         button {
             padding: 12px 24px;
             background: linear-gradient(to bottom, #5cb85c 0%, #4cae4c 100%);
@@ -133,16 +142,20 @@
             border: none;
             border-radius: 25px;
             cursor: pointer;
-            margin-right: 15px;
+            flex: 0 0 auto;
+            max-width: 200px;
+            width: auto;
             transition: all 0.3s;
             font-family: 'Oxanium', cursive;
             font-weight: 600;
             font-size: 1rem;
             text-transform: uppercase;
             letter-spacing: 1px;
+            text-align: center;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             position: relative;
             overflow: hidden;
+            display: inline-block;
         }
         
         button:hover {
@@ -247,13 +260,6 @@
             padding: 15px;
             background-color: rgba(0,0,0,0.2);
             border-radius: 8px;
-        }
-        
-        .button-container {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 10px;
         }
     </style>
 </head>
