@@ -215,6 +215,31 @@
             font-style: italic;
             color: #bbb;
         }
+        
+        .element.radioactive {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .element.radioactive::after {
+            content: '☢';
+            position: absolute;
+            bottom: 3px;
+            right: 3px;
+            font-size: 10px;
+            color: rgba(255, 255, 0, 0.8);
+            text-shadow: 0 0 3px yellow;
+        }
+        
+        @keyframes radiation {
+            0% { box-shadow: 0 0 5px rgba(255, 255, 0, 0.5); }
+            50% { box-shadow: 0 0 15px rgba(255, 255, 0, 0.8); }
+            100% { box-shadow: 0 0 5px rgba(255, 255, 0, 0.5); }
+        }
+        
+        .element.radioactive {
+            animation: radiation 2s infinite;
+        }
     </style>
 </head>
 <body>

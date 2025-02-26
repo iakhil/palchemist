@@ -48,5 +48,24 @@ const ELEMENTS = {
     chlorine: new Element('chlorine', 'Chlorine', 'Cl', 'halogen', 0x1FF01F),
     'hydrogen-fluoride': new Element('hydrogen-fluoride', 'Hydrogen Fluoride', 'HF', 'compound', 0x90E070),
     'lithium-hydride': new Element('lithium-hydride', 'Lithium Hydride', 'LiH', 'compound', 0xD080FF),
-    'beryllium-hydride': new Element('beryllium-hydride', 'Beryllium Hydride', 'BeH₂', 'compound', 0xD2FF30)
+    'beryllium-hydride': new Element('beryllium-hydride', 'Beryllium Hydride', 'BeH₂', 'compound', 0xD2FF30),
+
+    // Radioactive elements
+    uranium: new Element('uranium', 'Uranium', 'U', 'radioactive', 0x7CFC00),
+    plutonium: new Element('plutonium', 'Plutonium', 'Pu', 'radioactive', 0xFF69B4),
+    radium: new Element('radium', 'Radium', 'Ra', 'radioactive', 0xF0E68C),
+    thorium: new Element('thorium', 'Thorium', 'Th', 'radioactive', 0x8A2BE2),
+    polonium: new Element('polonium', 'Polonium', 'Po', 'radioactive', 0xDA70D6),
+
+    // Nuclear particles and components
+    'alpha-particle': new Element('alpha-particle', 'Alpha Particle', 'α', 'radiation', 0xFF4500),
+    'beta-particle': new Element('beta-particle', 'Beta Particle', 'β', 'radiation', 0x1E90FF),
+    'gamma-ray': new Element('gamma-ray', 'Gamma Ray', 'γ', 'radiation', 0x9370DB),
+    'uranium-235': new Element('uranium-235', 'Uranium-235', 'U-235', 'isotope', 0x66CD00),
+    'uranium-238': new Element('uranium-238', 'Uranium-238', 'U-238', 'isotope', 0x228B22),
+    'plutonium-239': new Element('plutonium-239', 'Plutonium-239', 'Pu-239', 'isotope', 0xDB7093),
+    'radon': new Element('radon', 'Radon', 'Rn', 'noble gas', 0xE6E6FA),
+    'lead': new Element('lead', 'Lead', 'Pb', 'metal', 0x778899),
+    'bismuth': new Element('bismuth', 'Bismuth', 'Bi', 'metal', 0x9932CC),
+    'astatine': new Element('astatine', 'Astatine', 'At', 'halogen', 0x00CED1)
 }; 

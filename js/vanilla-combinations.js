@@ -124,7 +124,103 @@ const COMBINATIONS = [
         inputs: ['helium', 'lithium'],
         output: 'nitrogen',
         description: 'Helium and lithium can undergo nuclear reactions to produce nitrogen'
-    }
+    },
+    // Nuclear Decay reactions
+    {
+        inputs: ['uranium'],
+        output: 'alpha-particle',
+        description: 'Uranium undergoes alpha decay, emitting an alpha particle (2 protons and 2 neutrons)'
+    },
+    {
+        inputs: ['alpha-particle'],
+        output: 'helium',
+        description: 'An alpha particle is essentially a helium nucleus (2 protons and 2 neutrons)'
+    },
+    {
+        inputs: ['neutron'],
+        output: 'beta-particle',
+        description: 'A neutron can decay into a proton and an electron (beta particle)'
+    },
+    {
+        inputs: ['beta-particle'],
+        output: 'electron',
+        description: 'A beta particle is essentially a high-energy electron'
+    },
+    {
+        inputs: ['uranium', 'neutron'],
+        output: 'uranium-235',
+        description: 'Uranium bombarded with a neutron can form the uranium-235 isotope'
+    },
+    {
+        inputs: ['uranium-235', 'neutron'],
+        output: 'gamma-ray',
+        description: 'Uranium-235 hit by a neutron undergoes fission, releasing gamma radiation'
+    },
+    {
+        inputs: ['uranium-235', 'neutron', 'neutron'],
+        output: 'plutonium-239',
+        description: 'Uranium-235 can capture neutrons and through decay become plutonium-239'
+    },
+    {
+        inputs: ['radium'],
+        output: 'radon',
+        description: 'Radium decays into radon gas through alpha decay'
+    },
+    {
+        inputs: ['radon'],
+        output: 'polonium',
+        description: 'Radon decays into polonium through a series of radioactive decays'
+    },
+    {
+        inputs: ['polonium'],
+        output: 'lead',
+        description: 'Polonium ultimately decays to stable lead through alpha decay'
+    },
+    {
+        inputs: ['thorium', 'neutron', 'neutron'],
+        output: 'uranium-235',
+        description: 'Thorium can be converted to fissile uranium-235 through neutron bombardment'
+    },
+    {
+        inputs: ['proton', 'proton', 'proton', 'proton', 'electron', 'electron'],
+        output: 'alpha-particle',
+        description: 'Four protons and two electrons can combine to form an alpha particle'
+    },
+    {
+        inputs: ['uranium-238', 'neutron', 'neutron', 'neutron'],
+        output: 'plutonium-239',
+        description: 'Uranium-238 can absorb neutrons to form plutonium-239, which is used in nuclear weapons'
+    },
+    {
+        inputs: ['uranium', 'neutron', 'neutron', 'neutron'],
+        output: 'uranium-238',
+        description: 'Uranium bombarded with multiple neutrons can form uranium-238'
+    },
+    {
+        inputs: ['lead', 'alpha-particle'],
+        output: 'polonium',
+        description: 'Lead bombarded with alpha particles can transmute into polonium'
+    },
+    {
+        inputs: ['bismuth', 'alpha-particle'],
+        output: 'astatine',
+        description: 'Bismuth bombarded with alpha particles can create astatine, the rarest naturally occurring element'
+    },
+    {
+        inputs: ['plutonium'],
+        output: 'uranium',
+        description: 'Plutonium decays to uranium through alpha decay'
+    },
+    {
+        inputs: ['gamma-ray', 'hydrogen'],
+        output: 'neutron',
+        description: 'Gamma radiation can knock neutrons free from hydrogen atoms'
+    },
+    {
+        inputs: ['gamma-ray', 'beryllium'],
+        output: 'neutron',
+        description: 'Gamma rays hitting beryllium produce neutrons (a neutron source)'
+    },
 ];
 
 // Function to check if a combination exists

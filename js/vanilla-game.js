@@ -6,10 +6,18 @@ class PalchemistGame {
         this.selectedElements = [];
         this.discoveredElements = new Set([
             'hydrogen', 'proton', 'electron', 'neutron', 
-            'oxygen', 'carbon', 'nitrogen'  // Starting elements
+            'oxygen', 'carbon', 'nitrogen', 'uranium'  // Starting elements
         ]); 
         
         this.initUI();
+        
+        // Add a hint message
+        const resultDisplay = document.getElementById('result-display');
+        resultDisplay.innerHTML = `
+            <h3>Welcome to Palchemist!</h3>
+            <p>Try combining elements. Hint: Uranium has some interesting radioactive properties!</p>
+        `;
+        
         console.log("Game initialization complete");
     }
     
@@ -55,6 +63,9 @@ class PalchemistGame {
             if (element.category === 'particle') {
                 elementDiv.classList.add('particle');
             }
+            if (element.category === 'radioactive' || element.category === 'radiation') {
+                elementDiv.classList.add('radioactive');
+            }
             elementDiv.style.backgroundColor = element.getColorString();
             elementDiv.textContent = element.symbol;
             elementDiv.dataset.id = element.id;
@@ -84,6 +95,9 @@ class PalchemistGame {
         elementDiv.className = 'element workspace-element appear';
         if (element.category === 'particle') {
             elementDiv.classList.add('particle');
+        }
+        if (element.category === 'radioactive' || element.category === 'radiation') {
+            elementDiv.classList.add('radioactive');
         }
         elementDiv.style.backgroundColor = element.getColorString();
         elementDiv.textContent = element.symbol;
@@ -127,6 +141,9 @@ class PalchemistGame {
             resultElementDiv.className = 'element result-element appear';
             if (resultElement.category === 'particle') {
                 resultElementDiv.classList.add('particle');
+            }
+            if (resultElement.category === 'radioactive' || resultElement.category === 'radiation') {
+                resultElementDiv.classList.add('radioactive');
             }
             resultElementDiv.style.backgroundColor = resultElement.getColorString();
             resultElementDiv.textContent = resultElement.symbol;
