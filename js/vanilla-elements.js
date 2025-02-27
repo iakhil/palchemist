@@ -1,11 +1,13 @@
 // Define the base elements and their properties
 class Element {
-    constructor(id, name, symbol, category, color) {
+    constructor(id, name, symbol, category, color, atomicNumber = null, atomicMass = null) {
         this.id = id;
         this.name = name;
         this.symbol = symbol;
         this.category = category;
         this.color = color;
+        this.atomicNumber = atomicNumber;
+        this.atomicMass = atomicMass;
     }
     
     // Get the color as a CSS hex color string
@@ -17,7 +19,7 @@ class Element {
 // Initial elements library
 const ELEMENTS = {
     // Starting elements
-    hydrogen: new Element('hydrogen', 'Hydrogen', 'H', 'gas', 0x88FF88),
+    hydrogen: new Element('hydrogen', 'Hydrogen', 'H', 'gas', 0x88FF88, 1, 1),
     deuterium: new Element('deuterium', 'Deuterium', 'D', 'isotope', 0x77EE77),
     proton: new Element('proton', 'Proton', 'p+', 'particle', 0xFF5555),
     electron: new Element('electron', 'Electron', 'e-', 'particle', 0x5555FF),
@@ -26,8 +28,8 @@ const ELEMENTS = {
     'hydrogen-gas': new Element('hydrogen-gas', 'Hydrogen Gas', 'H₂', 'gas', 0x99FF99),
     
     // New elements (first 10 of periodic table)
-    helium: new Element('helium', 'Helium', 'He', 'noble gas', 0xFFFF66),
-    lithium: new Element('lithium', 'Lithium', 'Li', 'alkali metal', 0xCC80FF),
+    helium: new Element('helium', 'Helium', 'He', 'noble gas', 0xFFFF66, 2, 4),
+    lithium: new Element('lithium', 'Lithium', 'Li', 'alkali metal', 0xCC80FF, 3, 7),
     beryllium: new Element('beryllium', 'Beryllium', 'Be', 'alkaline earth', 0xC2FF00),
     boron: new Element('boron', 'Boron', 'B', 'metalloid', 0xFFB5B5),
     carbon: new Element('carbon', 'Carbon', 'C', 'nonmetal', 0x909090),
@@ -67,5 +69,31 @@ const ELEMENTS = {
     'radon': new Element('radon', 'Radon', 'Rn', 'noble gas', 0xE6E6FA),
     'lead': new Element('lead', 'Lead', 'Pb', 'metal', 0x778899),
     'bismuth': new Element('bismuth', 'Bismuth', 'Bi', 'metal', 0x9932CC),
-    'astatine': new Element('astatine', 'Astatine', 'At', 'halogen', 0x00CED1)
+    'astatine': new Element('astatine', 'Astatine', 'At', 'halogen', 0x00CED1),
+
+    // More radioactive elements
+    'californium': new Element('californium', 'Californium', 'Cf', 'radioactive', 0xA3FF00),
+    'einsteinium': new Element('einsteinium', 'Einsteinium', 'Es', 'radioactive', 0xFF00FF),
+    'fermium': new Element('fermium', 'Fermium', 'Fm', 'radioactive', 0x00FFBB),
+    'tritium': new Element('tritium', 'Tritium', 'T', 'isotope', 0x66EE66),
+    'deuterium-tritium': new Element('deuterium-tritium', 'Deuterium-Tritium', 'D-T', 'fuel', 0x55DD55),
+    'cesium-137': new Element('cesium-137', 'Cesium-137', 'Cs-137', 'radioactive', 0xFFAA00),
+    'iodine-131': new Element('iodine-131', 'Iodine-131', 'I-131', 'radioactive', 0x551A8B),
+    'strontium-90': new Element('strontium-90', 'Strontium-90', 'Sr-90', 'radioactive', 0xEE82EE),
+    'cobalt-60': new Element('cobalt-60', 'Cobalt-60', 'Co-60', 'radioactive', 0x0000CD),
+
+    // Nuclear products and elements
+    'positron': new Element('positron', 'Positron', 'e+', 'particle', 0xFF5555),
+    'gold': new Element('gold', 'Gold', 'Au', 'metal', 0xFFD700),
+    'silver': new Element('silver', 'Silver', 'Ag', 'metal', 0xC0C0C0),
+    'mercury': new Element('mercury', 'Mercury', 'Hg', 'metal', 0xB4B4B4),
+    'krypton': new Element('krypton', 'Krypton', 'Kr', 'noble gas', 0x5CB8E5),
+    'barium': new Element('barium', 'Barium', 'Ba', 'metal', 0x00C957),
+    'xenon': new Element('xenon', 'Xenon', 'Xe', 'noble gas', 0x429EB0),
+    'americium': new Element('americium', 'Americium', 'Am', 'radioactive', 0xFF5F1F),
+    'fusion-energy': new Element('fusion-energy', 'Fusion Energy', '⚡', 'energy', 0xFFFF00),
+    'nuclear-isomer': new Element('nuclear-isomer', 'Nuclear Isomer', 'Iso', 'radioactive', 0xFFA07A),
+    'iron': new Element('iron', 'Iron', 'Fe', 'metal', 0xBF8040),
+    'neptunium': new Element('neptunium', 'Neptunium', 'Np', 'radioactive', 0x0080FF),
+    'cadmium': new Element('cadmium', 'Cadmium', 'Cd', 'metal', 0xFFD98F)
 }; 

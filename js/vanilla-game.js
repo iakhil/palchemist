@@ -6,7 +6,11 @@ class PalchemistGame {
         this.selectedElements = [];
         this.discoveredElements = new Set([
             'hydrogen', 'proton', 'electron', 'neutron', 
-            'oxygen', 'carbon', 'nitrogen', 'uranium'  // Starting elements
+            'oxygen', 'carbon', 'nitrogen', 'uranium', 
+            // Add some more starter elements for nuclear reactions
+            'gold', 'silver', 'mercury', 'radium', 'iron',
+            'gamma-ray', 'alpha-particle', 'tritium', 'deuterium',
+            'boron', 'beryllium', 'radon', 'xenon', 'krypton'
         ]); 
         
         this.initUI();
@@ -15,7 +19,7 @@ class PalchemistGame {
         const resultDisplay = document.getElementById('result-display');
         resultDisplay.innerHTML = `
             <h3>Welcome to Palchemist!</h3>
-            <p>Try combining elements. Hint: Uranium has some interesting radioactive properties!</p>
+            <p>Try combining elements. Hint: Uranium has some interesting radioactive properties! Try mixing neutrons with other elements.</p>
         `;
         
         console.log("Game initialization complete");
@@ -83,14 +87,37 @@ class PalchemistGame {
             elementDiv.textContent = element.symbol;
             elementDiv.dataset.id = element.id;
             
+            // Add atomic number if available
+            if (element.atomicNumber !== null) {
+                const atomicNumber = document.createElement('div');
+                atomicNumber.className = 'atomic-number';
+                atomicNumber.textContent = element.atomicNumber;
+                elementDiv.appendChild(atomicNumber);
+            }
+            
+            // Add atomic mass if available
+            if (element.atomicMass !== null) {
+                const atomicMass = document.createElement('div');
+                atomicMass.className = 'atomic-mass';
+                atomicMass.textContent = element.atomicMass;
+                elementDiv.appendChild(atomicMass);
+            }
+            
             const elementInfo = document.createElement('div');
             elementInfo.className = 'element-info';
             elementInfo.textContent = element.name;
             
             elementDiv.addEventListener('click', () => this.selectElement(element));
             
-            // Add tooltip with category
-            elementDiv.title = `${element.name} (${element.category})`;
+            // Add tooltip with category and atomic details
+            let tooltipText = `${element.name} (${element.category})`;
+            if (element.atomicNumber !== null) {
+                tooltipText += `, Atomic #: ${element.atomicNumber}`;
+            }
+            if (element.atomicMass !== null) {
+                tooltipText += `, Mass: ${element.atomicMass}`;
+            }
+            elementDiv.title = tooltipText;
             
             elementContainer.appendChild(elementDiv);
             elementContainer.appendChild(elementInfo);
@@ -115,7 +142,32 @@ class PalchemistGame {
         elementDiv.style.backgroundColor = element.getColorString();
         elementDiv.textContent = element.symbol;
         elementDiv.dataset.id = element.id;
-        elementDiv.title = `${element.name} (${element.category})`;
+        
+        // Add atomic number if available
+        if (element.atomicNumber !== null) {
+            const atomicNumber = document.createElement('div');
+            atomicNumber.className = 'atomic-number';
+            atomicNumber.textContent = element.atomicNumber;
+            elementDiv.appendChild(atomicNumber);
+        }
+        
+        // Add atomic mass if available
+        if (element.atomicMass !== null) {
+            const atomicMass = document.createElement('div');
+            atomicMass.className = 'atomic-mass';
+            atomicMass.textContent = element.atomicMass;
+            elementDiv.appendChild(atomicMass);
+        }
+        
+        // Add tooltip with category and atomic details
+        let tooltipText = `${element.name} (${element.category})`;
+        if (element.atomicNumber !== null) {
+            tooltipText += `, Atomic #: ${element.atomicNumber}`;
+        }
+        if (element.atomicMass !== null) {
+            tooltipText += `, Mass: ${element.atomicMass}`;
+        }
+        elementDiv.title = tooltipText;
         
         // Add to the workspace elements container
         workspaceElementsContainer.appendChild(elementDiv);
@@ -181,7 +233,32 @@ class PalchemistGame {
         }
         resultElementDiv.style.backgroundColor = resultElement.getColorString();
         resultElementDiv.textContent = resultElement.symbol;
-        resultElementDiv.title = `${resultElement.name} (${resultElement.category})`;
+        
+        // Add atomic number if available
+        if (resultElement.atomicNumber !== null) {
+            const atomicNumber = document.createElement('div');
+            atomicNumber.className = 'atomic-number';
+            atomicNumber.textContent = resultElement.atomicNumber;
+            resultElementDiv.appendChild(atomicNumber);
+        }
+        
+        // Add atomic mass if available
+        if (resultElement.atomicMass !== null) {
+            const atomicMass = document.createElement('div');
+            atomicMass.className = 'atomic-mass';
+            atomicMass.textContent = resultElement.atomicMass;
+            resultElementDiv.appendChild(atomicMass);
+        }
+        
+        // Add tooltip with category and atomic details
+        let tooltipText = `${resultElement.name} (${resultElement.category})`;
+        if (resultElement.atomicNumber !== null) {
+            tooltipText += `, Atomic #: ${resultElement.atomicNumber}`;
+        }
+        if (resultElement.atomicMass !== null) {
+            tooltipText += `, Mass: ${resultElement.atomicMass}`;
+        }
+        resultElementDiv.title = tooltipText;
         
         resultDisplay.appendChild(resultElementDiv);
         

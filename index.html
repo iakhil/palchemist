@@ -24,11 +24,11 @@
         #game-container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 10px;
         }
         
         #ui-container {
-            padding: 20px;
+            padding: 15px;
             background-color: rgba(30, 30, 30, 0.8);
             border-radius: 12px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
@@ -58,7 +58,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 15px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             justify-content: center;
         }
         
@@ -261,12 +261,48 @@
             background-color: rgba(0,0,0,0.2);
             border-radius: 8px;
         }
+        
+        .atomic-number {
+            position: absolute;
+            top: 2px;
+            left: 4px;
+            font-size: 0.65rem;
+            opacity: 0.9;
+        }
+        
+        .atomic-mass {
+            position: absolute;
+            top: 2px;
+            right: 4px;
+            font-size: 0.65rem;
+            opacity: 0.9;
+        }
+        
+        .logo-container {
+            text-align: center;
+            margin-bottom: 0.8rem;
+        }
+        
+        .game-logo {
+            max-width: 90%;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+        }
+        
+        @media (min-width: 768px) {
+            .game-logo {
+                max-width: 500px;
+            }
+        }
     </style>
 </head>
 <body>
     <div id="game-container">
         <div id="ui-container">
-            <h1>Palchemist</h1>
+            <div class="logo-container">
+                <img src="palchemist_logo.png" alt="Palchemist Logo" class="game-logo">
+            </div>
             <div id="elements-panel"></div>
             <div id="workspace"></div>
             <div id="result-display"></div>

@@ -221,6 +221,138 @@ const COMBINATIONS = [
         output: 'neutron',
         description: 'Gamma rays hitting beryllium produce neutrons (a neutron source)'
     },
+    // Add these new nuclear reactions
+
+    // Fusion reactions
+    {
+        inputs: ['deuterium', 'tritium'],
+        output: 'fusion-energy',
+        description: 'Deuterium and tritium undergo nuclear fusion, releasing tremendous energy (D-T fusion)'
+    },
+    {
+        inputs: ['deuterium', 'deuterium'],
+        output: 'tritium',
+        description: 'Two deuterium nuclei can fuse to form tritium and a proton (D-D fusion)'
+    },
+    {
+        inputs: ['hydrogen', 'neutron', 'neutron'],
+        output: 'tritium',
+        description: 'Hydrogen with two neutrons forms tritium, a radioactive isotope of hydrogen'
+    },
+    {
+        inputs: ['tritium'],
+        output: 'helium-3',
+        description: 'Tritium undergoes beta decay to form helium-3'
+    },
+
+    // Advanced nuclear transformations
+    {
+        inputs: ['plutonium', 'neutron', 'neutron', 'neutron'],
+        output: 'californium',
+        description: 'Plutonium bombarded with neutrons can transmute into californium through neutron capture and beta decay'
+    },
+    {
+        inputs: ['californium', 'neutron', 'neutron'],
+        output: 'einsteinium',
+        description: 'Californium bombarded with neutrons produces einsteinium (first discovered in debris from hydrogen bomb tests)'
+    },
+    {
+        inputs: ['einsteinium', 'neutron'],
+        output: 'fermium',
+        description: 'Einsteinium captures a neutron to form fermium, named after Enrico Fermi'
+    },
+    {
+        inputs: ['uranium-238', 'neutron'],
+        output: 'plutonium',
+        description: 'Uranium-238 captures a neutron and through beta decay becomes plutonium (breeder reaction)'
+    },
+
+    // Medical and industrial isotopes
+    {
+        inputs: ['barium', 'neutron'],
+        output: 'cesium-137',
+        description: 'Barium bombarded with neutrons can produce cesium-137, used in medical equipment'
+    },
+    {
+        inputs: ['xenon', 'neutron'],
+        output: 'iodine-131',
+        description: 'Xenon with neutron bombardment produces iodine-131, used in thyroid treatments'
+    },
+    {
+        inputs: ['krypton', 'neutron'],
+        output: 'strontium-90',
+        description: 'Krypton plus neutron bombardment leads to strontium-90, a dangerous fission product'
+    },
+    {
+        inputs: ['iron', 'neutron', 'neutron'],
+        output: 'cobalt-60',
+        description: 'Iron bombarded with neutrons produces cobalt-60, used in radiation therapy and food irradiation'
+    },
+
+    // Element transmutation
+    {
+        inputs: ['mercury', 'neutron'],
+        output: 'gold',
+        description: 'Mercury can be transmuted to gold through neutron bombardment and beta decay - the alchemist\'s dream achieved through nuclear physics!'
+    },
+    {
+        inputs: ['gold', 'neutron'],
+        output: 'mercury',
+        description: 'Gold can be transmuted back to mercury through neutron capture and beta decay'
+    },
+    {
+        inputs: ['silver', 'neutron'],
+        output: 'cadmium',
+        description: 'Silver transmutes to cadmium through neutron capture'
+    },
+
+    // Antimatter
+    {
+        inputs: ['gamma-ray', 'gamma-ray'],
+        output: 'positron',
+        description: 'High-energy gamma rays can create electron-positron pairs (pair production)'
+    },
+    {
+        inputs: ['positron', 'electron'],
+        output: 'gamma-ray',
+        description: 'A positron and electron annihilate, converting their mass into energy as gamma rays'
+    },
+
+    // Nuclear safety elements
+    {
+        inputs: ['boron', 'neutron'],
+        output: 'lithium',
+        description: 'Boron effectively captures neutrons to form lithium (used in nuclear reactor control rods)'
+    },
+    {
+        inputs: ['uranium-235', 'boron'],
+        output: 'lead',
+        description: 'Boron absorbs neutrons in a uranium reactor, preventing runaway chain reactions'
+    },
+
+    // Modern elements
+    {
+        inputs: ['plutonium', 'deuterium'],
+        output: 'americium',
+        description: 'Plutonium bombarded with deuterium can produce americium, used in smoke detectors'
+    },
+    {
+        inputs: ['americium'],
+        output: 'neptunium',
+        description: 'Americium undergoes alpha decay to form neptunium'
+    },
+
+    // Nuclear isomers
+    {
+        inputs: ['gamma-ray', 'cobalt-60'],
+        output: 'nuclear-isomer',
+        description: 'Gamma rays can excite cobalt-60 nuclei to a metastable state called a nuclear isomer'
+    },
+    {
+        inputs: ['nuclear-isomer'],
+        output: 'gamma-ray',
+        description: 'Nuclear isomers release energy in the form of gamma rays when they return to ground state'
+    },
 ];
 
 // Function to check if a combination exists
