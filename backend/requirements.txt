@@ -1,0 +1,25 @@
+# Web framework
+Flask==2.3.3
+Flask-Cors==4.0.0
+Werkzeug==2.3.7
+
+# Firebase
+firebase-admin==6.2.0
+
+# HTTP requests
+requests==2.31.0
+
+# Environment variables
+python-dotenv==1.0.0
+
+# Date and time handling
+pytz==2023.3
+
+# JSON handling
+jsonschema==4.19.0
+
+# Security
+itsdangerous==2.1.2
+
+# WSGI server for production
+gunicorn==21.2.0 
