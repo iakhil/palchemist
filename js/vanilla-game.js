@@ -365,39 +365,88 @@ class PalchemistGame {
         // Convert Set to Array and sort by element name
         const sortedElements = Array.from(this.discoveredElements)
             .map(id => ELEMENTS[id])
-            .filter(element => element) // Filter out any undefined elements
-            .sort((a, b) => a.name.localeCompare(b.name));
+            .filter(element => element); // Filter out any undefined elements
         
+        // Create category groups
+        const categories = {
+            'particle': { title: 'Particles', elements: [] },
+            'radiation': { title: 'Radiation', elements: [] },
+            'radioactive': { title: 'Radioactive Elements', elements: [] },
+            'isotope': { title: 'Isotopes', elements: [] },
+            'other': { title: 'Elements', elements: [] }
+        };
+        
+        // Sort elements into categories
         sortedElements.forEach(element => {
-            const elementContainer = document.createElement('div');
-            elementContainer.style.display = 'inline-block';
-            elementContainer.style.margin = '5px';
-            elementContainer.className = 'appear';
-            
-            const elementDiv = document.createElement('div');
-            elementDiv.className = 'element';
             if (element.category === 'particle') {
-                elementDiv.classList.add('particle');
+                categories.particle.elements.push(element);
+            } else if (element.category === 'radiation') {
+                categories.radiation.elements.push(element);
+            } else if (element.category === 'radioactive') {
+                categories.radioactive.elements.push(element);
+            } else if (element.category === 'isotope') {
+                categories.isotope.elements.push(element);
+            } else {
+                categories.other.elements.push(element);
             }
-            if (element.category === 'radioactive' || element.category === 'radiation') {
-                elementDiv.classList.add('radioactive');
-            }
-            elementDiv.style.backgroundColor = element.getColorString();
-            elementDiv.textContent = element.symbol;
-            elementDiv.dataset.id = element.id;
+        });
+        
+        // Create a container for each category
+        Object.values(categories).forEach(category => {
+            if (category.elements.length === 0) return; // Skip empty categories
             
-            const elementInfo = document.createElement('div');
-            elementInfo.className = 'element-info';
-            elementInfo.textContent = element.name;
+            // Create category container
+            const categoryContainer = document.createElement('div');
+            categoryContainer.className = 'element-category';
             
-            elementDiv.addEventListener('click', () => this.selectElement(element));
+            // Add category title
+            const categoryTitle = document.createElement('h4');
+            categoryTitle.className = 'category-title';
+            categoryTitle.textContent = category.title;
+            categoryContainer.appendChild(categoryTitle);
             
-            // Add tooltip with category
-            elementDiv.title = `${element.name} (${element.category})`;
+            // Create elements container
+            const elementsContainer = document.createElement('div');
+            elementsContainer.className = 'category-elements';
             
-            elementContainer.appendChild(elementDiv);
-            elementContainer.appendChild(elementInfo);
-            elementsPanel.appendChild(elementContainer);
+            // Sort elements by name within category
+            category.elements.sort((a, b) => a.name.localeCompare(b.name));
+            
+            // Add elements to container
+            category.elements.forEach(element => {
+                const elementContainer = document.createElement('div');
+                elementContainer.style.display = 'inline-block';
+                elementContainer.style.margin = '5px';
+                elementContainer.className = 'appear';
+                
+                const elementDiv = document.createElement('div');
+                elementDiv.className = 'element';
+                if (element.category === 'particle') {
+                    elementDiv.classList.add('particle');
+                }
+                if (element.category === 'radioactive' || element.category === 'radiation') {
+                    elementDiv.classList.add('radioactive');
+                }
+                elementDiv.style.backgroundColor = element.getColorString();
+                elementDiv.textContent = element.symbol;
+                elementDiv.dataset.id = element.id;
+                
+                const elementInfo = document.createElement('div');
+                elementInfo.className = 'element-info';
+                elementInfo.textContent = element.name;
+                
+                elementDiv.addEventListener('click', () => this.selectElement(element));
+                
+                // Add tooltip with category
+                elementDiv.title = `${element.name} (${element.category})`;
+                
+                elementContainer.appendChild(elementDiv);
+                elementContainer.appendChild(elementInfo);
+                elementsContainer.appendChild(elementContainer);
+            });
+            
+            categoryContainer.appendChild(elementsContainer);
+            elementsPanel.appendChild(categoryContainer);
         });
     }
     
