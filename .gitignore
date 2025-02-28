@@ -1,0 +1,126 @@
+# Firebase service account keys
+*.json
+service_acc.json
+*firebase-adminsdk*.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+.env
+venv/
+ENV/
+
+# JavaScript/Node.js
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+.npm
+.yarn-integrity
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+.project
+.classpath
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# dotenv environment variable files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Flask stuff
+instance/
+.webassets-cache
+flask_session/
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class 
