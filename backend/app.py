@@ -26,7 +26,7 @@ app.logger.info('Palchemist backend starting')
 # Configure CORS based on environment
 if os.environ.get('FLASK_ENV') == 'production':
     # In production, only allow specific origins
-    allowed_origins = os.environ.get('ALLOWED_ORIGINS', 'https://palchemist.example.com').split(',')
+    allowed_origins = os.environ.get('ALLOWED_ORIGINS', 'https://iakhil.github.io/palchemist/').split(',')
     CORS(app, resources={r"/api/*": {"origins": allowed_origins}})
     app.logger.info(f'CORS configured for production with origins: {allowed_origins}')
 else:
