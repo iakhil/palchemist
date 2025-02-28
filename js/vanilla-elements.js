@@ -1,13 +1,11 @@
 // Define the base elements and their properties
 class Element {
-    constructor(id, name, symbol, category, color, atomicNumber = null, atomicMass = null) {
+    constructor(id, name, symbol, category, color) {
         this.id = id;
         this.name = name;
         this.symbol = symbol;
         this.category = category;
         this.color = color;
-        this.atomicNumber = atomicNumber;
-        this.atomicMass = atomicMass;
     }
     
     // Get the color as a CSS hex color string
@@ -19,7 +17,7 @@ class Element {
 // Initial elements library
 const ELEMENTS = {
     // Starting elements
-    hydrogen: new Element('hydrogen', 'Hydrogen', 'H', 'gas', 0x88FF88, 1, 1),
+    hydrogen: new Element('hydrogen', 'Hydrogen', 'H', 'gas', 0x88FF88),
     deuterium: new Element('deuterium', 'Deuterium', 'D', 'isotope', 0x77EE77),
     proton: new Element('proton', 'Proton', 'p+', 'particle', 0xFF5555),
     electron: new Element('electron', 'Electron', 'e-', 'particle', 0x5555FF),
@@ -28,8 +26,8 @@ const ELEMENTS = {
     'hydrogen-gas': new Element('hydrogen-gas', 'Hydrogen Gas', 'H₂', 'gas', 0x99FF99),
     
     // New elements (first 10 of periodic table)
-    helium: new Element('helium', 'Helium', 'He', 'noble gas', 0xFFFF66, 2, 4),
-    lithium: new Element('lithium', 'Lithium', 'Li', 'alkali metal', 0xCC80FF, 3, 7),
+    helium: new Element('helium', 'Helium', 'He', 'noble gas', 0xFFFF66),
+    lithium: new Element('lithium', 'Lithium', 'Li', 'alkali metal', 0xCC80FF),
     beryllium: new Element('beryllium', 'Beryllium', 'Be', 'alkaline earth', 0xC2FF00),
     boron: new Element('boron', 'Boron', 'B', 'metalloid', 0xFFB5B5),
     carbon: new Element('carbon', 'Carbon', 'C', 'nonmetal', 0x909090),

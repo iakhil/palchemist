@@ -3,7 +3,11 @@ class PalchemistGame {
     constructor() {
         console.log("Game initializing...");
         
+        this.username = null;
+        this.score = 0;
         this.selectedElements = [];
+        this.gameActive = false;
+        this.timeLeft = 30;
         this.discoveredElements = new Set([
             'hydrogen', 'proton', 'electron', 'neutron', 
             'oxygen', 'carbon', 'nitrogen', 'uranium', 
@@ -13,16 +17,301 @@ class PalchemistGame {
             'boron', 'beryllium', 'radon', 'xenon', 'krypton'
         ]); 
         
-        this.initUI();
+        // Elements discovered during the current game session
+        this.newlyDiscoveredElements = new Set();
         
-        // Add a hint message
-        const resultDisplay = document.getElementById('result-display');
-        resultDisplay.innerHTML = `
-            <h3>Welcome to Palchemist!</h3>
-            <p>Try combining elements. Hint: Uranium has some interesting radioactive properties! Try mixing neutrons with other elements.</p>
-        `;
+        // Show username modal first
+        this.showUsernameModal().then(() => {
+            this.initUI();
+            this.updateLeaderboard();
+            this.showStartGameModal();
+        });
         
         console.log("Game initialization complete");
+    }
+    
+    async showUsernameModal() {
+        return new Promise((resolve) => {
+            const modal = document.getElementById('username-modal');
+            const input = document.getElementById('username-input');
+            const submit = document.getElementById('username-submit');
+
+            const handleSubmit = () => {
+                const username = input.value.trim();
+                if (username && username.length <= 20) {
+                    this.username = username;
+                    modal.classList.remove('show');
+                    resolve();
+                }
+            };
+
+            submit.addEventListener('click', handleSubmit);
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleSubmit();
+            });
+
+            modal.classList.add('show');
+            input.focus();
+        });
+    }
+
+    createModal(title, content, buttons) {
+        const modal = document.createElement('div');
+        modal.className = 'modal show';
+        
+        let modalHTML = `
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <h2>${title}</h2>
+                ${content}
+                <div class="modal-buttons">
+        `;
+        
+        // Add buttons
+        buttons.forEach(button => {
+            modalHTML += `<button id="${button.id}">${button.text}</button>`;
+        });
+        
+        modalHTML += `
+                </div>
+            </div>
+        `;
+        
+        modal.innerHTML = modalHTML;
+        document.body.appendChild(modal);
+        
+        // Add close button functionality
+        const closeButton = modal.querySelector('.close-button');
+        closeButton.addEventListener('click', () => {
+            modal.remove();
+        });
+        
+        // Add button event listeners
+        buttons.forEach(button => {
+            const buttonElement = document.getElementById(button.id);
+            buttonElement.addEventListener('click', () => {
+                if (button.action) {
+                    button.action();
+                }
+                modal.remove();
+            });
+        });
+        
+        return modal;
+    }
+
+    showStartGameModal() {
+        const content = `
+            <p>You have 30 seconds to discover as many elements as possible!</p>
+            <p>More complex combinations = More points!</p>
+        `;
+        
+        const buttons = [{
+            id: 'start-game',
+            text: 'Start Game',
+            action: () => this.startGame()
+        }];
+        
+        this.createModal('Ready to Play?', content, buttons);
+    }
+
+    startGame() {
+        // Remove persistent play again button if it exists
+        const persistentButton = document.getElementById('persistent-play-again');
+        if (persistentButton) {
+            persistentButton.remove();
+        }
+        
+        this.gameActive = true;
+        this.score = 0;
+        this.timeLeft = 30;
+        
+        // Reset newly discovered elements for this game session
+        this.newlyDiscoveredElements.clear();
+        
+        // Keep the starter elements the same
+        const starterElements = [
+            'hydrogen', 'proton', 'electron', 'neutron', 
+            'oxygen', 'carbon', 'nitrogen', 'uranium',
+            'gold', 'silver', 'mercury', 'radium', 'iron',
+            'gamma-ray', 'alpha-particle', 'tritium', 'deuterium',
+            'boron', 'beryllium', 'radon', 'xenon', 'krypton'
+        ];
+        
+        // Reset to starter elements
+        this.discoveredElements.clear();
+        starterElements.forEach(e => this.discoveredElements.add(e));
+
+        // Remove existing timer if there is one
+        const existingTimer = document.getElementById('timer-display');
+        if (existingTimer) {
+            existingTimer.remove();
+        }
+
+        // Add timer display
+        const timerDisplay = document.createElement('div');
+        timerDisplay.id = 'timer-display';
+        timerDisplay.className = 'timer-display';
+        
+        // Insert timer after the logo to preserve it
+        const logoContainer = document.querySelector('.logo-container');
+        if (logoContainer) {
+            logoContainer.parentNode.insertBefore(timerDisplay, logoContainer.nextSibling);
+        } else {
+            document.getElementById('ui-container').prepend(timerDisplay);
+        }
+
+        // Start timer
+        this.updateTimer();
+        this.timerInterval = setInterval(() => this.updateTimer(), 1000);
+
+        // Update UI
+        this.updateElementsPanel();
+        
+        // Clear the workspace
+        this.clearWorkspace();
+        
+        // Reset result display
+        const resultDisplay = document.getElementById('result-display');
+        resultDisplay.innerHTML = `
+            <h3>Game Started!</h3>
+            <p>Combine elements to earn points. You have 30 seconds!</p>
+        `;
+    }
+
+    updateTimer() {
+        const timerDisplay = document.getElementById('timer-display');
+        timerDisplay.textContent = `Time Left: ${this.timeLeft}s`;
+        
+        if (this.timeLeft <= 0) {
+            this.endGame();
+        } else {
+            this.timeLeft--;
+            if (this.timeLeft <= 10) {
+                timerDisplay.classList.add('timer-warning');
+            }
+        }
+    }
+
+    endGame() {
+        clearInterval(this.timerInterval);
+        this.gameActive = false;
+
+        // Calculate final score
+        const finalScore = this.score;
+        
+        // First update the score in Firebase
+        this.updateScore(finalScore).then(() => {
+            // Then update the leaderboard display
+            this.updateLeaderboard().then(() => {
+                // Add a persistent play again button to the UI
+                this.addPersistentPlayAgainButton();
+                
+                // Finally show the end game modal
+                const content = `
+                    <p>Final Score: ${finalScore} points</p>
+                    <p>New Elements Discovered: ${this.newlyDiscoveredElements.size}</p>
+                `;
+                
+                const buttons = [{
+                    id: 'play-again',
+                    text: 'Play Again',
+                    action: () => this.startGame()
+                }];
+                
+                this.createModal('Time\'s Up!', content, buttons);
+            });
+        });
+    }
+
+    addPersistentPlayAgainButton() {
+        // Remove existing button if there is one
+        const existingButton = document.getElementById('persistent-play-again');
+        if (existingButton) {
+            existingButton.remove();
+        }
+        
+        // Create a persistent play again button
+        const playAgainButton = document.createElement('button');
+        playAgainButton.id = 'persistent-play-again';
+        playAgainButton.className = 'persistent-play-again';
+        playAgainButton.textContent = 'Play Again';
+        playAgainButton.addEventListener('click', () => this.startGame());
+        
+        // Add it to the UI container, after the timer display
+        const timerDisplay = document.getElementById('timer-display');
+        if (timerDisplay && timerDisplay.parentNode) {
+            timerDisplay.parentNode.insertBefore(playAgainButton, timerDisplay.nextSibling);
+        } else {
+            // Fallback if timer display is not found
+            document.getElementById('ui-container').prepend(playAgainButton);
+        }
+    }
+
+    updateScore(score) {
+        // Post score to backend with correct port
+        return fetch('http://localhost:5000/api/scores', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: this.username,
+                score: score
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to update score');
+            }
+            return response.json();
+        })
+        .catch(error => {
+            console.error('Error updating score:', error);
+        });
+    }
+
+    async updateLeaderboard() {
+        try {
+            console.log("Fetching leaderboard data...");
+            // Use the correct port for the backend server
+            const response = await fetch('http://localhost:5000/api/leaderboard');
+            
+            if (!response.ok) {
+                throw new Error(`Server responded with status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            console.log("Leaderboard data received:", data);
+            
+            const leaderboardContent = document.getElementById('leaderboard-content');
+            leaderboardContent.innerHTML = '';
+            
+            // Check if we have leaderboard data
+            if (!data.leaderboard || data.leaderboard.length === 0) {
+                leaderboardContent.innerHTML = '<p>No scores yet. Be the first to set a high score!</p>';
+                return;
+            }
+            
+            // Populate the leaderboard
+            data.leaderboard.forEach(entry => {
+                const entryDiv = document.createElement('div');
+                entryDiv.className = `leaderboard-entry ${entry.rank <= 3 ? 'rank-' + entry.rank : ''}`;
+                entryDiv.innerHTML = `
+                    <span>#${entry.rank} ${entry.username}</span>
+                    <span>${entry.score} points</span>
+                `;
+                leaderboardContent.appendChild(entryDiv);
+            });
+            
+            console.log("Leaderboard updated with", data.leaderboard.length, "entries");
+        } catch (error) {
+            console.error('Error updating leaderboard:', error);
+            
+            // Show error message in leaderboard
+            const leaderboardContent = document.getElementById('leaderboard-content');
+            leaderboardContent.innerHTML = '<p>Error loading leaderboard. Please try again later.</p>';
+        }
     }
     
     initUI() {
@@ -57,6 +346,16 @@ class PalchemistGame {
         
         // Populate elements panel with discovered elements
         this.updateElementsPanel();
+        
+        // Add leaderboard toggle functionality
+        const leaderboardHeader = document.getElementById('leaderboard-header');
+        const leaderboardContent = document.getElementById('leaderboard-content');
+        const toggleButton = document.getElementById('toggle-leaderboard');
+        
+        leaderboardHeader.addEventListener('click', () => {
+            leaderboardContent.classList.toggle('collapsed');
+            toggleButton.classList.toggle('collapsed');
+        });
     }
     
     updateElementsPanel() {
@@ -87,37 +386,14 @@ class PalchemistGame {
             elementDiv.textContent = element.symbol;
             elementDiv.dataset.id = element.id;
             
-            // Add atomic number if available
-            if (element.atomicNumber !== null) {
-                const atomicNumber = document.createElement('div');
-                atomicNumber.className = 'atomic-number';
-                atomicNumber.textContent = element.atomicNumber;
-                elementDiv.appendChild(atomicNumber);
-            }
-            
-            // Add atomic mass if available
-            if (element.atomicMass !== null) {
-                const atomicMass = document.createElement('div');
-                atomicMass.className = 'atomic-mass';
-                atomicMass.textContent = element.atomicMass;
-                elementDiv.appendChild(atomicMass);
-            }
-            
             const elementInfo = document.createElement('div');
             elementInfo.className = 'element-info';
             elementInfo.textContent = element.name;
             
             elementDiv.addEventListener('click', () => this.selectElement(element));
             
-            // Add tooltip with category and atomic details
-            let tooltipText = `${element.name} (${element.category})`;
-            if (element.atomicNumber !== null) {
-                tooltipText += `, Atomic #: ${element.atomicNumber}`;
-            }
-            if (element.atomicMass !== null) {
-                tooltipText += `, Mass: ${element.atomicMass}`;
-            }
-            elementDiv.title = tooltipText;
+            // Add tooltip with category
+            elementDiv.title = `${element.name} (${element.category})`;
             
             elementContainer.appendChild(elementDiv);
             elementContainer.appendChild(elementInfo);
@@ -142,32 +418,7 @@ class PalchemistGame {
         elementDiv.style.backgroundColor = element.getColorString();
         elementDiv.textContent = element.symbol;
         elementDiv.dataset.id = element.id;
-        
-        // Add atomic number if available
-        if (element.atomicNumber !== null) {
-            const atomicNumber = document.createElement('div');
-            atomicNumber.className = 'atomic-number';
-            atomicNumber.textContent = element.atomicNumber;
-            elementDiv.appendChild(atomicNumber);
-        }
-        
-        // Add atomic mass if available
-        if (element.atomicMass !== null) {
-            const atomicMass = document.createElement('div');
-            atomicMass.className = 'atomic-mass';
-            atomicMass.textContent = element.atomicMass;
-            elementDiv.appendChild(atomicMass);
-        }
-        
-        // Add tooltip with category and atomic details
-        let tooltipText = `${element.name} (${element.category})`;
-        if (element.atomicNumber !== null) {
-            tooltipText += `, Atomic #: ${element.atomicNumber}`;
-        }
-        if (element.atomicMass !== null) {
-            tooltipText += `, Mass: ${element.atomicMass}`;
-        }
-        elementDiv.title = tooltipText;
+        elementDiv.title = `${element.name} (${element.category})`;
         
         // Add to the workspace elements container
         workspaceElementsContainer.appendChild(elementDiv);
@@ -213,6 +464,8 @@ class PalchemistGame {
     }
     
     processCombination(combination) {
+        if (!this.gameActive) return;
+
         const resultElement = ELEMENTS[combination.output];
         
         // Display the result
@@ -233,41 +486,28 @@ class PalchemistGame {
         }
         resultElementDiv.style.backgroundColor = resultElement.getColorString();
         resultElementDiv.textContent = resultElement.symbol;
-        
-        // Add atomic number if available
-        if (resultElement.atomicNumber !== null) {
-            const atomicNumber = document.createElement('div');
-            atomicNumber.className = 'atomic-number';
-            atomicNumber.textContent = resultElement.atomicNumber;
-            resultElementDiv.appendChild(atomicNumber);
-        }
-        
-        // Add atomic mass if available
-        if (resultElement.atomicMass !== null) {
-            const atomicMass = document.createElement('div');
-            atomicMass.className = 'atomic-mass';
-            atomicMass.textContent = resultElement.atomicMass;
-            resultElementDiv.appendChild(atomicMass);
-        }
-        
-        // Add tooltip with category and atomic details
-        let tooltipText = `${resultElement.name} (${resultElement.category})`;
-        if (resultElement.atomicNumber !== null) {
-            tooltipText += `, Atomic #: ${resultElement.atomicNumber}`;
-        }
-        if (resultElement.atomicMass !== null) {
-            tooltipText += `, Mass: ${resultElement.atomicMass}`;
-        }
-        resultElementDiv.title = tooltipText;
+        resultElementDiv.title = `${resultElement.name} (${resultElement.category})`;
         
         resultDisplay.appendChild(resultElementDiv);
         
         // Add the new element to discovered elements if it's not already there
         if (!this.discoveredElements.has(resultElement.id)) {
+            // This is a newly discovered element
             this.discoveredElements.add(resultElement.id);
+            this.newlyDiscoveredElements.add(resultElement.id);
             this.updateElementsPanel();
             
-            resultDisplay.innerHTML += '<p><strong>New element discovered!</strong></p>';
+            // Calculate points for this combination
+            const points = this.calculateScore(combination);
+            this.score += points;
+            
+            resultDisplay.innerHTML += `
+                <p><strong>New element discovered!</strong></p>
+                <p>+${points} points!</p>
+            `;
+            
+            // Update leaderboard
+            this.updateLeaderboard();
             
             // Add back the result element since the innerHTML update removed it
             resultDisplay.appendChild(resultElementDiv);
@@ -288,6 +528,23 @@ class PalchemistGame {
         workspaceElementsContainer.innerHTML = ''; // Clear all elements
         
         this.selectedElements = [];
+    }
+
+    // Update scoring system
+    calculateScore(combination) {
+        // Base points for discovery
+        let points = 100;
+        
+        // Bonus points based on number of elements used
+        points += combination.inputs.length * 50;
+        
+        // Bonus for special categories
+        const resultElement = ELEMENTS[combination.output];
+        if (resultElement.category === 'radioactive') points += 200;
+        if (resultElement.category === 'radiation') points += 150;
+        if (resultElement.category === 'isotope') points += 100;
+        
+        return points;
     }
 }
 
