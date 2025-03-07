@@ -250,7 +250,7 @@ class PalchemistGame {
 
     updateScore(score) {
         // Post score to backend with correct port
-        return fetch('http://localhost:5000/api/scores', {
+        return fetch('https://palchemist.onrender.com/api/scores', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
