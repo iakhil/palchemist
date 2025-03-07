@@ -275,7 +275,7 @@ class PalchemistGame {
         try {
             console.log("Fetching leaderboard data...");
             // Use the correct port for the backend server
-            const response = await fetch('http://localhost:5000/api/leaderboard');
+            const response = await fetch('https://palchemist.onrender.com/api/scores');
             
             if (!response.ok) {
                 throw new Error(`Server responded with status: ${response.status}`);
